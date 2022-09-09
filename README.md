@@ -7,4 +7,5 @@ Link to pdf documents is found here-[Overview of Machine Learning](https://githu
 
 
 ## Portfolio Component 1: Data Exploration
-Link to answer of question is found here - [Portfolio Component 1: Data Exploration](https://github.com/saugat1794/Sample_Portfolio_Saugat_Gyawali/blob/main/Portfolio%20Component%201.pdf)
+Link to answer of question is found here - [Portfolio Component 1: Data Exploration](https://github.com/saugat1794/Sample_Portfolio_Saugat_Gyawali/blob/main/Portfolio%20Component%201.pdf).
+C++ Source Code is found here - [Click here for code](https://github.com/saugat1794/Sample_Portfolio_Saugat_Gyawali/blob/main/Source.cpp) 
