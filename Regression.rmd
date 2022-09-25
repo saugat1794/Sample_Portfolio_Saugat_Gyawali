@@ -1,0 +1,324 @@
+---
+title: "Regression"
+author: "Saugat Gyawali"
+date: "09/13/2022"
+output:
+  pdf_document: default
+  html_document:
+    df_print: paged
+  word_document: default
+---
+
+## Linear Regression
+It is used to predict the value of a variable based on the value of another variable. 
+These sort of models are simple and provide and easy to interpret mathematical 
+formula so that we can generate prediction. 
+
+### How does Linear Regression work?
+As the name suggests, linear regression shows the relationship between dependent 
+variable(y) and independent variable(x) in linear format. Let us assume, 
+linear function as Y = b + wX. While training the model, we are given: 
+x - input training data(univariate), y: labels to data(supervised learning), 
+w = coefficient of x and b is y-intercept. Once we find the good w and b we can 
+get the best line for x and y. With that we can find the value of y using the value of x.
+
+It is very important to update w and b values, to find the best fit line by 
+minimizing the error between predicted value and true value(y).
+
+Cost function(mean squared error): ![](C:\Users\sauga\OneDrive\Desktop\Assignments\Cost-function.png)
+
+Gradient descent: In order to update w and b we can reduce cost function and 
+achieve the best fit line. The idea is to start with random w and b and then 
+iterately updating the values, reaching minimum cost.
+
+
+
+***
+#### Strength of Linear Regression:
+  + Implementation is simple using it.
+  + Works for a good pattern that follows linear.  
+  + Low variance    
+
+#### Weakness of Linear regression
+  + Underfitting  
+  + Sensitive to outliers
+  + Assumes that the data is independent.  
+
+***
+Source of data set is [here](https://www.kaggle.com/datasets/shivachandel/kc-house-data)
+
+***
+
+### Reading csv file from Kaggle dataset.
+```{r}
+data <- read.csv("kc_house_data.csv")
+
+dim(data)
+```
+### Dividing the data into train and test data.
+We divide the data in 80:20 ratio meaning, 80 percentage is for training and 20% of data is for testing purpose.
+
+
+```{r}
+set.seed(1234)
+i <- sample(1:nrow(data), nrow(data) * 0.80, replace=FALSE)
+train <- data[i,]
+test <- data[-i,]
+```
+
+
+### Some of the Data Exploration using the training data
+```{r}
+names(train)
+```
+
+```{r}
+dim(train)
+```
+
+```{r}
+summary(train)
+```
+
+```{r}
+str(train)
+```
+
+```{r}
+head(train)
+```
+
+```{r}
+tail(train)
+```
+```{r}
+sum(is.na(train))
+```
+
+### Some informative graphs
+#### Price vs Area of living room
+
+```{r}
+plot(train$sqft_living, train$price, pch = 16, col="blue", cex=0.5, 
+     main="Price based on area of living room", xlab="Living room Area", ylab="Price")
+```
+
+***
+#### Histogram of Price
+```{r}
+Price <- train$price
+hist(Price, col.lab="red", xlim=c(0e+00, 4e+06))
+```
+***
+
+***
+#### Comparison of correlation between different parameters
+```{R}
+#install.packages("corrplot")
+library(corrplot)
+
+trainData <- train[, 3:20]
+
+M <- cor(trainData)
+
+corrplot(M, method="color")
+
+```
+
+***
+#### Building a simple linear model
+```{r}
+lm1 <- lm(price~sqft_above, data=train)
+summary(lm1)
+```
+***
+#### Explanation
+
+##### Estimates
+This means that when a single unit change in x or predictor, changes in Y or target. 
+For example, when finding the linear model of single predictor(sqft_above), this means that 1 sqft_above changes dollars of 268.462
+
+##### Standard Error
+The standard error is estimated error while calculating the coefficients. This is because different sample may have different coefficients. Also, it is a residual standard error divided by the square root of the sum of square of that predictor.
+
+##### t-value
+t-value is the ratio of estimates and standard error. When we have greater t-value, we can go against the null hypothesis, meaning it can have a significance difference.
+
+##### p-value
+Smaller the p-value then they are agains the null hypothesis, which shows they are important. Also the *** shows they are significantly important.
+
+##### Residual standard error
+This is also called standard deviation, which shows how good the model does at predicting price based on the average.
+
+##### Multiple R-squared and Adjusted R-squared
+R squared shows to what extent the variance of dependent variable is explained by independent variable. 
+For example, here R-squared is almost 37%, this means 37% of observed variation can be explained by the input model. 
+Adjusted R-squared penalize while adding useless variables. 
+
+##### F-Statistic
+It measures the significance of model overall but not with just one variable. For a single predictor, F-value is just a square root of t.
+And, less the p-value greater the significance as above.
+
+***
+
+
+### Plot the Residuals
+```{r}
+par(mfrow=c(2,2))
+plot(lm1)
+```
+
+#### Explanation:
+##### Residuals vs Fitted:
+Plot shows the residuals have non-linear patterns or not. If we have equally distributed data between horizontal line, this shows that we don't have non-linear relationships.
+In the figure, the data points is divided by horizontal red line.
+
+##### Normal Q-Q
+If the residuals are normally distributed, we will see a fairly straight diagonal line following the dashed line.
+
+#### Scale-Location
+This shows there is not fairly distributed around the line. Meaning there is not a same variance.
+
+#### Residuals vs Levarage
+This shows the leverage points which are influencing the regression line.Leverage point is a data point with an unusual x-value.
+
+***
+
+### Multiple linear regression
+
+For multiple linear regression, we will be using predictors like: sqft_living, sqft_above, floors with price.
+```{r}
+lm2 <- lm(price~sqft_living + sqft_above, data=train)
+summary(lm2)
+```
+#### Residual plots for multiple linear regression
+```{r}
+plot(lm2)
+```
+
+### Third Linear regression using different predictors
+For this, I am using sqft_living, sqft_lot, sqft_above, yr_built with price.
+
+```{r}
+lm3 <- lm(price~sqft_living + sqft_above + bathrooms + grade + sqft_living15, data=train)
+summary(lm3)
+```
+#### Residual model for an improved model
+```{r}
+plot(lm3)
+```
+
+
+### Adding interaction effects
+
+I have added more interaction effects between sqft_living and sqft_above. Also between sqft_above and bathrooms.
+```{r}
+lm4 <- lm(price~sqft_living + sqft_above + sqft_living * sqft_above + grade + bathrooms + sqft_above * bathrooms + sqft_living15, data = train)
+summary(lm4)
+```
+
+#### Residual model for an interactive effects:
+```{r}
+plot(lm3)
+```
+
+
+
+### Different predictions of three models
+
+#### Simple linear regression
+```{r}
+pred1 <- predict(lm1, newdata=test)
+
+cor1 <- cor(pred1, test$price)
+
+mse1 <- mean((pred1-test$price)^2)
+rmse1 <- sqrt(mse1)
+
+print(paste('correlation:', cor1))
+print(paste('mse:',mse1))
+print(paste('rmse:', rmse1))
+
+```
+
+#### Multiple linear regression
+```{r}
+pred2 <- predict(lm2, newdata=test)
+
+cor2 <- cor(pred2, test$price)
+
+mse2 <- mean((pred2-test$price)^2)
+rmse2 <- sqrt(mse2)
+
+print(paste('correlation:', cor2))
+print(paste('mse:',mse2))
+print(paste('rmse:', rmse2))
+```
+#### Adding more predictors
+```{r}
+pred3 <- predict(lm3, newdata=test)
+
+cor3 <- cor(pred3, test$price)
+
+mse3 <- mean((pred3-test$price)^2)
+rmse3 <- sqrt(mse3)
+
+print(paste('correlation:', cor3))
+print(paste('mse:',mse3))
+print(paste('rmse:', rmse3))
+```
+
+
+
+#### Adding interaction effects
+```{r}
+pred4 <- predict(lm4, newdata=test)
+
+cor4 <- cor(pred4, test$price)
+
+mse4 <- mean((pred4-test$price)^2)
+rmse4 <- sqrt(mse4)
+
+print(paste('correlation:', cor4))
+print(paste('mse:',mse4))
+print(paste('rmse:', rmse4))
+
+```
+
+
+### Comparison of different models
+
+#### Comparing first and second model
+```{r}
+anova(lm1, lm2)
+```
+
+Here we see that RSS is lower for model 2 compared to that of model 1. Furthermore,
+p-value for model 2 is less. This shows model 2 is better than model 1. Since, we 
+found out model 2 is better, now we can compare with third model.
+
+#### Comparing second and third model
+```{r}
+anova(lm2,lm3)
+```
+Similarly, here we found out RSS for model 3 is lesser than model 2, and similarly p-value is less. 
+This shows that model 3 is better than model 2. Finally, we can conclude that model 3 is better than other model.
+
+
+#### Comparing third and fourth model
+```{r}
+anova(lm3,lm4)
+```
+The anova function shows that lm4 is better than lm3 because it has low RSS and 
+p-value. Thus, we got better model while adding interaction effect on our model.
+I tried with polynomial regression too with the model but it was good while using 
+an interaction effect.
+
+
+#### Explanation
+We got model 4 as a good model. It is a model where we have added interaction effect. 
+This is because there is a synergy between the predictors too. We know that living room 
+area and area of lot have correlation between them, which is shown in correlation map too.
+This variable are also called confounding variables, meaning that hava a relationship or 
+correlation between other predictors and target variables.
+
