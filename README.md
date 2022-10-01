@@ -18,5 +18,5 @@ Link to the pdf for Logistic Regression is here - [Logistic Regression pdf](http
 ## Portfolio: ML from Scratch
 Link to the source code is found here - [Click here for C++ code](https://github.com/saugat1794/Sample_Portfolio_Saugat_Gyawali/blob/main/LogisticRegression.cpp)<br/>
 Link to the pdf for description is found here - [ML from Scratch-Logistic Regression](https://github.com/saugat1794/Sample_Portfolio_Saugat_Gyawali/blob/main/AssignmentMLLogistic.pdf)<br/>
-Link to the pdf for Naive Bayes description is found here - [ML from Scratch - Naive Bayes]
-(https://github.com/saugat1794/Sample_Portfolio_Saugat_Gyawali/blob/main/Na%C3%AFve%20Baye%20from%20scratch%20c%2B%2B.pdf)
+Link to the pdf for Naive Bayes description is found here - [ML from Scratch - Naive Bayes](https://github.com/saugat1794/Sample_Portfolio_Saugat_Gyawali/blob/main/Na%C3%AFve%20Baye%20from%20scratch%20c%2B%2B.pdf)<br/>
+
