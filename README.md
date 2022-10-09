@@ -22,5 +22,7 @@ Link to the pdf for Naive Bayes description is found here - [ML from Scratch - N
 
 ## Portfolio: Similarity
 Link to the R studio notebook is found here - [Click here for R source code]
+(https://github.com/saugat1794/Sample_Portfolio_Saugat_Gyawali/blob/main/Similarity.Rmd)<br/>
 Link to the pdf for description is found here - [Click here for pdf]
+(https://github.com/saugat1794/Sample_Portfolio_Saugat_Gyawali/blob/main/Similarity%20(2).pdf)<br/>
 Narrative document is found here - [Click here]
