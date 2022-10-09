@@ -1,0 +1,339 @@
+---
+title: "Similarity/Regression"
+author: "Saugat Gyawali/Bishal Neupane/Spencer Gray/Micheal Stinnett"
+date: "10/08/2022"
+output:
+  pdf_document: 
+    df_print: paged
+  html_document:
+    df_print: paged
+---
+
+Source of data set is [here](https://www.kaggle.com/datasets/shivachandel/kc-house-data)
+
+### Description:
+
+#### Comparison between linear regression and Decision tree
+
+Linear regression supports only linear solutions, whereas decision trees supports non linearity solutions too. Also, decision trees handles colinearity better than that of linear regression. Decison trees are better than linear regression for categorical independent variables.  
+
+
+#### Comparison between linear regression and KNN
+
+Linear regression is parametric model, whereas KNN is a non-parametric model. kNN is a slow model, because it need to find the neighbor nodes. But linear regression can easily extract output finding the weights.
+
+
+### Reading the csv file from kaggle data.
+```{r}
+data <- read.csv("kc_house_data.csv")
+```
+
+
+### Dividing the data into train and test data.
+We divide the data in 80:20 ratio meaning, 80 percentage is for training and 20% of data is for testing purpose.
+
+
+```{r}
+set.seed(1234)
+i <- sample(1:nrow(data), nrow(data) * 0.80, replace=FALSE)
+train <- data[i,]
+test <- data[-i,]
+```
+
+
+### Some of the data exploration of training datasets
+```{r}
+names(train)
+```
+
+```{r}
+dim(train)
+```
+
+```{r}
+summary(train)
+```
+
+```{r}
+str(train)
+```
+
+
+```{r}
+
+print(head(train))
+```
+
+```{r}
+print(tail(train))
+```
+
+```{r}
+sum(is.na(train))
+```
+### Some informative graphs
+
+#### Price vs Area of living room
+
+```{r}
+library(tidyverse)
+ggplot(data=train, mapping=aes(x=sqft_living,y=price)) + ggtitle("Living room area vs Price") + geom_point()
+
+```
+#### Histogram of Price
+```{r}
+Price <- train$price
+hist(Price, col.lab="red", xlim=c(0e+00, 4e+06))
+```
+
+
+
+#### Comparison of correlation between different parameters
+```{R}
+#install.packages("corrplot")
+library(corrplot)
+
+trainData <- train[, 3:20]
+
+M <- cor(trainData)
+
+corrplot(M, method="color")
+
+```
+
+
+### Finding trend of price based on year built
+
+```{r}
+library(tidyverse)
+ggplot(data=train, mapping=aes(x=yr_built,y=Price)) + geom_line()         
+```
+
+
+## Performing linear regression
+```{r}
+lm1 <- lm(price~sqft_above, data=train)
+summary(lm1)
+```
+
+
+### Adding multiple predictors
+```{r}
+lm2 <- lm(price~sqft_living + sqft_above + grade + bathrooms, data = train)
+summary(lm2)
+
+```
+
+### Predicting using the test datasets
+
+```{r}
+pred2 <- predict(lm2, newdata=test)
+cor_lr <- cor(pred2, test$price)
+mse_lr <- mean((pred2-test$price)^2)
+rmse_lr <- sqrt(mse_lr)
+
+```
+
+
+### Using kNN Regression
+
+### When k = 3
+```{r}
+library(caret)
+fit <- knnreg(train[,c('sqft_living', 'sqft_above', 'grade', 'bathrooms')], train[, c('price')], k = 3)
+predictions_kequal3 <- predict(fit, test[,c('sqft_living', 'sqft_above', 'grade', 'bathrooms')])
+cor_kequal3 <- cor(predictions_kequal3, test$price)
+mse_kequal3 <- mean((predictions_kequal3 - test$price)^2)
+rmse_kequal3 <- sqrt(mse_kequal3)
+
+```
+
+
+### Finding the best K
+
+```{r}
+cor_k <- rep(0, 20)
+mse_k <- rep(0, 20)
+i <- 1
+for (k in seq(1, 39, 2)){
+fit_k <- knnreg(train[,c('sqft_living', 'sqft_above', 'grade', 'bathrooms')], train[, c('price')],k=k)
+pred_k <- predict(fit_k, test[,c('sqft_living', 'sqft_above', 'grade', 'bathrooms')] )
+cor_k[i] <- cor(pred_k, test$price)
+mse_k[i] <- mean((pred_k - test$price)^2)
+print(paste("k=", k, cor_k[i], mse_k[i]))
+i <- i + 1
+}
+min_mse <- which.min(mse_k)
+max_cor <- which.max(cor_k)
+print(paste("Min mse = ", min_mse))
+print(paste("Max cor_k = ", max_cor))
+```
+
+'7' is found to be the best k, while checking with minimum mse and maximum cor_k. Now, again implementing kNN regression using k = 7 
+
+
+### When k = 7
+```{r}
+library(caret)
+fit <- knnreg(train[,c('sqft_living', 'sqft_above', 'grade', 'bathrooms')], train[, c('price')], k = 7)
+predictions_kequal7 <- predict(fit, test[,c('sqft_living', 'sqft_above', 'grade', 'bathrooms')])
+cor_kequals7 <- cor(predictions_kequal7, test$price)
+mse_kequals7 <- mean((predictions_kequal7 - test$price)^2)
+rmse_kequals7 <- sqrt(mse_kequals7)
+
+```
+
+*** 
+We didn't get the better result yet. Now, we can scale the data so that it might produce the better result.
+
+***
+
+###  kNN Regression by normalizing the data
+```{r}
+library(caret)
+
+normalize <- function(x){
+  return ((x-min(x))/(max(x)-min(x)))
+}
+
+
+#Creating a new dataframe
+#For training
+dfnew1 <- data.frame(train$sqft_living, train$sqft_above, train$grade, train$bathrooms, train$price)
+
+#For test
+dfnew2 <- data.frame(test$sqft_living, test$sqft_above, test$grade, test$bathrooms, test$price)
+
+
+names(dfnew1) <- c("sqft_living", "sqft_above", "grade", "bathrooms", "price")
+names(dfnew2) <- c("sqft_living", "sqft_above", "grade", "bathrooms", "price")
+dfnew1_scaled <- as.data.frame(lapply(dfnew1,normalize))
+dfnew2_scaled <- as.data.frame(lapply(dfnew2,normalize))
+fit <- knnreg(dfnew1_scaled[,1:4], dfnew1_scaled[,5], k = 7)
+predictions_normalizing <- predict(fit, dfnew2_scaled[, 1:4])
+cor_normalizing <- cor(predictions_normalizing, dfnew2_scaled[,5])
+mse_normalizing <- mean((predictions_normalizing - dfnew2_scaled[,5])^2)
+rmse_normalizing <- sqrt(mse_normalizing)
+
+```
+
+### Decision tree regression
+
+```{r}
+library(tree)
+tree_prices <- tree(price~., data=dfnew2)
+plot(tree_prices)
+text(tree_prices, cex=0.5, pretty=0)
+```
+
+### Predicting using the test data set!
+
+```{r}
+decisiontree_pred <- predict(tree_prices, dfnew2)
+mse_decisiontree <- mean((decisiontree_pred-test$price)^2)
+cor_decisiontree <- cor(decisiontree_pred, dfnew2$price)
+rmse_decisiontree <- sqrt(mse_decisiontree)
+
+```
+### Cross validation for pruning the tree
+
+```{r}
+cv_tree <- cv.tree(tree_prices)
+plot(cv_tree$size, cv_tree$dev, type="b", xlab="Tree Size", ylab="MSE")
+min <- which.min(cv_tree$dev)
+print(paste("For minimum MSE chose Tree Size = ", cv_tree$size[1]))
+tree_pruned <- prune.tree(tree_prices, best = 7)
+plot(tree_pruned)
+text(tree_pruned, pretty=0)
+
+```
+***
+
+We do not need to check the accuracy for the pruned model because the pruning does not help here.
+
+***
+
+```{r}
+temp_pred <- predict(tree_pruned, dfnew2)
+temp_mse <- mean((temp_pred-dfnew2$price)^2)
+cor <- cor(temp_pred, dfnew2$price)
+                     
+```
+
+***
+
+### Comparing the result
+
+### For linear regression
+
+```{r}
+
+print(paste('correlation:', cor_lr))
+print(paste('mse:',mse_lr))
+print(paste('rmse:', rmse_lr))
+
+
+```
+
+
+### For KNN regression when k = 3
+
+```{r}
+print(paste('correlation:', cor_kequal3))
+print(paste('mse:',mse_kequal3))
+print(paste('rmse:', rmse_kequal3))
+
+```
+
+
+### For kNN regression when k = 7
+
+```{r}
+print(paste('correlation:', cor_kequals7))
+print(paste('mse:',mse_kequals7))
+print(paste('rmse:', rmse_kequals7))
+
+```
+
+
+### For kNN regression when k = 7 and normalizing the data
+
+```{r}
+print(paste('correlation:', cor_normalizing))
+print(paste('mse:',mse_normalizing))
+print(paste('rmse:', rmse_normalizing))
+```
+
+
+### For Decision tree
+
+```{r}
+print(paste('correlation:', cor_decisiontree))
+print(paste('mse:',mse_decisiontree))
+print(paste('rmse:', rmse_decisiontree))
+```
+
+
+### Analysis of the result
+
+#### For linear regression
+
+Linear regression works good for linear relationship. We determine the price of the house based first by using single predictor "sqft_above". Price is a dependent variable and square foot above is independent variable. For multivariable regression, there is addition of different predictors like "sqft_living", "sqft_above", "grade", "bathrooms". 
+For multiple variable regression: 
+  price = w0 + w1 * sqft_living + w2 * sqft_above + w3 * grade + w4 * bathrooms
+  
+Our task is to find w0, w1, w2, w3, w4 in such a way that we minimize the rmse value and achieving the best line. For this we use gradient descent. Main idea is to put at first random value for each weight and updating the values till the cost function reaches minimum value. 
+
+#### For kNN regression
+
+kNN is a supervised machine learning algorith which says that similar things exist in close proximity. kNN uses the idea of similarity by finding the euclidian distance between each other. In kNN regression, we fit the training data, which is classified into groups. Now, when new datasets or test data is given, we can observe what group its nearest neighbors it belong to by finding the minimum euclidian distance. k in kNN regression is kept odd number. We can find the k in sucha a way that there is less error and high correlation, so that it will be good model. 
+
+#### For decision trees
+
+It recursively split the input observations into partitions until there is observations in a given partition. When we use linear regression model, our aim is to decrease the error over all the data, but in decision trees we want to minimize RSS within each region. We use top-down, greedy approach to partition the data. To start, all predictors are examined to see if they can make the good splits, and for each predictor the numerical value at which the split must be determined. First split will divide into two regions. It is divided till spliting threshold is reached. 
+
+### Conclusion
+
+By comparing with different algorithms, we found that decision trees algorithm better for these dataset. This might be because of missing features. We know that the price of the house does not only depend on the area how much it is occupied but also the locality where is it, at which state and many other factor. Since, the linear regression is mainly used for linear relationship, a price of the house is not linearly dependent with the predictors here. kNN didn't beat decision trees algorithm for this datasets, it might be because kNN is very sensitive for bad features. Chosing the other features might enhance the result of kNN. 
+
+
