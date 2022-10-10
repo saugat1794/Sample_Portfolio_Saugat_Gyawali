@@ -24,5 +24,5 @@ Link to the pdf for Naive Bayes description is found here - [ML from Scratch - N
 Link to the R studio notebook is found here - [Click here for R source code](https://github.com/saugat1794/Sample_Portfolio_Saugat_Gyawali/blob/main/Similarity.Rmd)<br/>
 Link to the "Notebook 1 - Regression" pdf for description is found here - [Click here for pdf](https://github.com/saugat1794/Sample_Portfolio_Saugat_Gyawali/blob/main/Similarity%20(2).pdf)<br/>
 Link to the "Notebook 2 - Classification" pdf for description is found here - [Click here for pdf](https://github.com/saugat1794/Sample_Portfolio_Saugat_Gyawali/blob/main/Updated-Classification-using-Logistic-Regression-KNN-and-Decision-Tree.pdf)<br/>
-Link to the "Notebook 3 - Clustering" is found here - [Click here](https://github.com/saugat1794/Sample_Portfolio_Saugat_Gyawali/blob/main/Clustering%20(1).pdf)
+Link to the "Notebook 3 - Clustering" is found here - [Click here](https://github.com/saugat1794/Sample_Portfolio_Saugat_Gyawali/blob/main/Clustering%20(1).pdf)<br/>
 Link to the "Notebook 4 - Dimensionality" is found here - [Click here](https://github.com/saugat1794/Sample_Portfolio_Saugat_Gyawali/blob/main/Dimensionality.pdf)
