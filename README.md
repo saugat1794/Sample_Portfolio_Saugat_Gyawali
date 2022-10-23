@@ -26,3 +26,13 @@ Link to the "Notebook 1 - Regression" pdf for description is found here - [Click
 Link to the "Notebook 2 - Classification" pdf for description is found here - [Click here for pdf](https://github.com/saugat1794/Sample_Portfolio_Saugat_Gyawali/blob/main/Updated-Classification-using-Logistic-Regression-KNN-and-Decision-Tree.pdf)<br/>
 Link to the "Notebook 3 - Clustering" is found here - [Click here](https://github.com/saugat1794/Sample_Portfolio_Saugat_Gyawali/blob/main/Clustering%20(1).pdf)<br/>
 Link to the "Notebook 4 - Dimensionality" is found here - [Click here](https://github.com/saugat1794/Sample_Portfolio_Saugat_Gyawali/blob/main/Dimensionality.pdf)
+
+## Portfolio: Kernel and Ensemble Methods
+Link to the R studio notebook for regression is here - [Click here for R source code]
+(https://github.com/saugat1794/Sample_Portfolio_Saugat_Gyawali/blob/main/Kernel.Rmd)<br/>
+Notebook 1 Regression: [Click here]
+(https://github.com/saugat1794/Sample_Portfolio_Saugat_Gyawali/blob/main/Kernel.pdf)<br/>
+Notebook 2 Classification: [Click here]
+(https://github.com/saugat1794/Sample_Portfolio_Saugat_Gyawali/blob/main/Updated-SVM-and-kernel.pdf)<br/>
+Notebook 3 Ensemble techniques: [Click here]
+(https://github.com/saugat1794/Sample_Portfolio_Saugat_Gyawali/blob/main/Updated-Ensemble-Technique.pdf)
