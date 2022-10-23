@@ -1,0 +1,264 @@
+---
+title: "Kernel and Ensemble Methods"
+author: "Saugat Gyawali/Bishal Neupane"
+output:
+  pdf_document: default
+  html_notebook: default
+---
+
+### Source of data set:
+
+Source of data set is [here](https://www.kaggle.com/datasets/shivachandel/kc-house-data)
+
+
+### Reading csv file from Kaggle dataset
+```{r}
+data <- read.csv("kc_house_data.csv")
+dim(data)
+```
+
+### Dividing the data into train, test and validate data.
+We divide the data in 60:20:20 ratio meaning, 60 percentage is for training and 20% of data is for testing purpose and 20 for validation
+
+```{r}
+set.seed(1234)
+spec <- c(train=0.6, test=0.2, validate=0.2)
+i <- sample(cut(1:nrow(data),
+                nrow(data)*cumsum(c(0,spec)), labels=names(spec)))
+train <- data[i=="train",]
+test <- data[i=="test",]
+vald <- data[i=="validate",]
+```
+
+
+### Some of the data exploration using the training data
+
+```{r}
+names(train)
+```
+
+```{r}
+dim(train)
+```
+
+```{r}
+summary(train)
+```
+
+```{r}
+str(train)
+```
+
+```{r}
+head(train)
+```
+
+```{r}
+tail(train)
+```
+```{r}
+sum(is.na(train))
+```
+
+### Some informative graphs
+
+Price vs Area of living room
+
+```{r}
+plot(train$sqft_living, train$price, pch = 16, col="blue", cex=0.5, 
+     main="Price based on area of living room", xlab="Living room Area", ylab="Price")
+```
+
+
+Histogram of Price
+```{r}
+Price <- train$price
+hist(Price, col.lab="red", xlim=c(0e+00, 4e+06))
+```
+
+
+Comparison of correlation between different parameters
+```{R}
+#install.packages("corrplot")
+library(corrplot)
+
+trainData <- train[, 3:20]
+
+M <- cor(trainData)
+
+corrplot(M, method="color")
+
+```
+
+
+Finding trend of price based on year built
+
+```{r}
+library(tidyverse)
+ggplot(data=train, mapping=aes(x=yr_built,y=Price)) + geom_line()         
+```
+
+
+### Performing SVM Regression using linear kernel
+
+First we will put random cost C=10.
+```{r}
+library(e1071)
+svm_fit <- svm(price~sqft_living + sqft_above + grade + bathrooms, data=train, kernel="linear", cost=10, scale=FALSE)
+summary(svm_fit)
+svm_pred1 <- predict(svm_fit, newdata=test)
+cor1 <- cor(svm_pred1, test$price)
+mse_svm1 <- mean((svm_pred1-test$price)^2)
+rmse_svm1 <- sqrt(mse_svm1)
+print(paste('Cor: ', cor1))
+print(paste('mse: ', mse_svm1))
+print(paste('rmse: ', rmse_svm1))
+
+```
+
+### Tuning parameters
+
+```{r}
+
+tune_svm1 <- tune(svm, price~sqft_living + sqft_above + grade + bathrooms, data=vald, kernel="linear", ranges=list(cost=c(0.001, 0.01, 0.1, 1, 5, 10,100)))
+summary(tune_svm1)
+```
+
+### Evaluating on best linear svm
+
+```{r}
+pred <- predict(tune_svm1$best.model, newdata=test)
+cor_svm1_tune <- cor(pred, test$price)
+mse_svm1_tune <- mean((pred-test$price)^2)
+rmse_svm1_tune <- sqrt(mse_svm1_tune)
+print(paste('Cor: ', cor_svm1_tune))
+print(paste('mse: ', mse_svm1_tune))
+print(paste('rmse: ', rmse_svm1_tune))
+```
+
+There was a slight increase in cor(pred, test$price). 
+
+### Performing SVM regression using polynomial kernel
+
+```{r}
+library(e1071)
+svm_fit2 <- svm(price~sqft_living + sqft_above + grade + bathrooms, data=train, kernel="polynomial", cost=10, degree = 3, scale=TRUE)
+summary(svm_fit2)
+svm_pred1 <- predict(svm_fit2, newdata=test)
+cor1 <- cor(svm_pred1, test$price)
+mse_svm1 <- mean((svm_pred1-test$price)^2)
+rmse_svm1 <- sqrt(mse_svm1)
+print(paste('Correlation: ', cor1))
+print(paste('mse: ', mse_svm1))
+print(paste('rmse: ', rmse_svm1))
+
+```
+There was slight decrease in correlation and increase in mean square error compared to linear kernel.
+
+
+### Performing SVM Regression, polynomial kernel using C = 1
+
+```{r}
+library(e1071)
+svm_fit2 <- svm(price~sqft_living + sqft_above + grade + bathrooms, data=train, kernel="polynomial", cost=1, degree = 3, scale=TRUE)
+summary(svm_fit2)
+svm_pred1 <- predict(svm_fit2, newdata=test)
+cor1 <- cor(svm_pred1, test$price)
+mse_svm1 <- mean((svm_pred1-test$price)^2)
+rmse_svm1 <- sqrt(mse_svm1)
+print(paste('Correlation: ', cor1))
+print(paste('mse: ', mse_svm1))
+print(paste('rmse: ', rmse_svm1))
+
+```
+
+
+### Performing SVM regression using Radial Kernel.
+### Cost = 1, Gamma = 1
+```{r}
+svm_fit2 <- svm(price ~ sqft_living + sqft_above + grade + bathrooms, data=train, kernel="radial", cost=1, gamma=1, scale=TRUE)
+svm_pred2 <- predict(svm_fit2, newdata=test)
+cor2 <- cor(svm_pred2, test$price)
+mse_svm2 <- mean((svm_pred2-test$price)^2)
+rmse_svm2 <- sqrt(mse_svm2)
+print(paste('Correlation: ', cor2))
+print(paste('mse: ', mse_svm2))
+print(paste('rmse: ', rmse_svm2)) 
+
+```
+
+There was vast decrease in correlation and increase in mean square error while keeping radial kernel. However, we will try to optimize it by tuning hyperparameters.
+
+
+### Performing using different hyperparameters
+### Cost = 1 and Gamma = 0.5
+```{r}
+svm_fit2 <- svm(price ~ sqft_living + sqft_above + grade + bathrooms, data=train, kernel="radial", cost=1, gamma=0.5, scale=TRUE)
+svm_pred2 <- predict(svm_fit2, newdata=test)
+cor2 <- cor(svm_pred2, test$price)
+mse_svm2 <- mean((svm_pred2-test$price)^2)
+rmse_svm2 <- sqrt(mse_svm2)
+print(paste('Correlation: ', cor2))
+print(paste('mse: ', mse_svm2))
+print(paste('rmse: ', rmse_svm2)) 
+```
+
+
+### Tuning hyperparameters for Radial Kernel
+
+Decrasing a validate data because it was taking a lot of time. 
+```{r}
+
+set.seed(12)
+k <- sample(1:nrow(vald), nrow(vald) * 0.10, replace=FALSE)
+tempVald <- vald[k,]
+dim(tempVald)
+```
+
+
+```{r}
+set.seed(1234)
+tune.out <- tune(svm, price ~ sqft_living + sqft_above + grade + bathrooms, data=tempVald, kernel="radial",
+                 ranges=list(cost=c(0.1,1,10,100,1000),
+                             gamma=c(0.5,1,2,3,4)))
+summary(tune.out)
+```
+### Evaluating on best cost and gamma
+
+Best cost for radial kernel was found to be 1 and gamma was found to be 0.5.
+```{r}
+pred <- predict(tune.out$best.model, newdata=test)
+cor_svm1_tune <- cor(pred, test$price)
+mse_svm1_tune <- mean((pred-test$price)^2)
+rmse_svm1_tune <- sqrt(mse_svm1_tune)
+print(paste('Cor: ', cor_svm1_tune))
+print(paste('mse: ', mse_svm1_tune))
+print(paste('rmse: ', rmse_svm1_tune))
+
+```
+
+I got the result of 0.64 correlation coefficient and error of 86349031356 while using radial kernel.
+
+
+### Analysis of kernels
+
+First of all, we need to know what is kernel, it is a function which is used in Support vector machine to solve problems. One of the advantage of kernel is that we can go for large dimensions and produce a smooth result with it. So, how kernel works then? it solves non-linear problems with the help of linear classifiers. 
+
+### Linear kernel
+
+When the data is linearly seperable or it can be seperated using only linear lines. It is manily used kernels when there are a lots of features in particular data. Advantages of using linear kernel is that it is faster than other kernel, and there is only need of one hyperparameter. In the dataset, I used, linear kernel was found to be the best one because of less error. At first when I used C value equal to 10, the error was a bit more as compared to the best model when the C value was found to be 100 a better one by tuning it. Unlike the linear regression, this tries to fit the best line between the border or boundary line and hyperplance. The results was the most likely achieved because all of the predictors was found to be linearly related because they were strongly correlated.
+k(x,x') = x^T x'
+
+
+### Polynomial kernel
+
+Our datasets worked good while using the polynomial kernel but it was not as good as a linear kernel. The good thing about the polynomial kernel is that it is does not only looks for the feature, wheras it uses combination of a feature too. It is also known as interaction feature. 
+Polynomial kernels k(x,x') = (1+ x^T x')^d for d > 0 which contains all polynomials terms up to degree d.
+Support vector machine with a polynomial kernel is used to compute the relationships betwee the observation in a higher dimension. 
+
+### RBF Kernel
+
+First when we used a random hyperparameter and gamma, the error was found to be massive, but after tuning it the error was less as compared to the first one. The raidal kernel has an additional parameters called gamma which controls the shape of hyperplane boundary. Smaller gammas give sharper peaks in high dimension whereas larger gammas give a peak that are rounded. This means that when we use a high gamma value, the final result is also affected by the points close to the decision boundary. RBF kernel result was bad for this datasets. It might be because the dataset is more linearly seperable and it accounts for the data inside the boundary. 
+
+
+
