@@ -31,4 +31,5 @@ Link to the "Notebook 4 - Dimensionality" is found here - [Click here](https://g
 Link to the R studio notebook for regression is here - [Click here for R source code](https://github.com/saugat1794/Sample_Portfolio_Saugat_Gyawali/blob/main/Kernel.Rmd)<br/>
 Notebook 1 Regression: [Click here](https://github.com/saugat1794/Sample_Portfolio_Saugat_Gyawali/blob/main/Kernel.pdf)<br/>
 Notebook 2 Classification: [Click here](https://github.com/saugat1794/Sample_Portfolio_Saugat_Gyawali/blob/main/Updated-SVM-and-kernel.pdf)<br/>
-Notebook 3 Ensemble techniques: [Click here](https://github.com/saugat1794/Sample_Portfolio_Saugat_Gyawali/blob/main/Updated-Ensemble-Technique.pdf)
+Notebook 3 Ensemble techniques: [Click here](https://github.com/saugat1794/Sample_Portfolio_Saugat_Gyawali/blob/main/Updated-Ensemble-Technique.pdf)<br/>
+Narrative document: [Click here](https://github.com/saugat1794/Sample_Portfolio_Saugat_Gyawali/blob/main/What%20is%20SVM.pdf)
