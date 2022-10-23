@@ -28,11 +28,7 @@ Link to the "Notebook 3 - Clustering" is found here - [Click here](https://githu
 Link to the "Notebook 4 - Dimensionality" is found here - [Click here](https://github.com/saugat1794/Sample_Portfolio_Saugat_Gyawali/blob/main/Dimensionality.pdf)
 
 ## Portfolio: Kernel and Ensemble Methods
-Link to the R studio notebook for regression is here - [Click here for R source code]
-(https://github.com/saugat1794/Sample_Portfolio_Saugat_Gyawali/blob/main/Kernel.Rmd)<br/>
-Notebook 1 Regression: [Click here]
-(https://github.com/saugat1794/Sample_Portfolio_Saugat_Gyawali/blob/main/Kernel.pdf)<br/>
-Notebook 2 Classification: [Click here]
-(https://github.com/saugat1794/Sample_Portfolio_Saugat_Gyawali/blob/main/Updated-SVM-and-kernel.pdf)<br/>
-Notebook 3 Ensemble techniques: [Click here]
-(https://github.com/saugat1794/Sample_Portfolio_Saugat_Gyawali/blob/main/Updated-Ensemble-Technique.pdf)
+Link to the R studio notebook for regression is here - [Click here for R source code](https://github.com/saugat1794/Sample_Portfolio_Saugat_Gyawali/blob/main/Kernel.Rmd)<br/>
+Notebook 1 Regression: [Click here](https://github.com/saugat1794/Sample_Portfolio_Saugat_Gyawali/blob/main/Kernel.pdf)<br/>
+Notebook 2 Classification: [Click here](https://github.com/saugat1794/Sample_Portfolio_Saugat_Gyawali/blob/main/Updated-SVM-and-kernel.pdf)<br/>
+Notebook 3 Ensemble techniques: [Click here](https://github.com/saugat1794/Sample_Portfolio_Saugat_Gyawali/blob/main/Updated-Ensemble-Technique.pdf)
