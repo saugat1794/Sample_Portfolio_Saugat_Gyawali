@@ -33,3 +33,8 @@ Notebook 1 Regression: [Click here](https://github.com/saugat1794/Sample_Portfol
 Notebook 2 Classification: [Click here](https://github.com/saugat1794/Sample_Portfolio_Saugat_Gyawali/blob/main/Updated-SVM-and-kernel.pdf)<br/>
 Notebook 3 Ensemble techniques: [Click here](https://github.com/saugat1794/Sample_Portfolio_Saugat_Gyawali/blob/main/Updated-Ensemble-Technique.pdf)<br/>
 Narrative document: [Click here](https://github.com/saugat1794/Sample_Portfolio_Saugat_Gyawali/blob/main/What%20is%20SVM.pdf)
+
+## Portfolio: ML with sklearn
+Link to the source code(ipynb) - [Click here](https://github.com/saugat1794/Sample_Portfolio_Saugat_Gyawali/blob/main/SklearnAssign.ipynb)<br/>
+Link to the pdf - [Click here](https://github.com/saugat1794/Sample_Portfolio_Saugat_Gyawali/blob/main/SklearnAssign.pdf)
+
