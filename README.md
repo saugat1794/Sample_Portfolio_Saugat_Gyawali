@@ -38,3 +38,5 @@ Narrative document: [Click here](https://github.com/saugat1794/Sample_Portfolio_
 Link to the source code(ipynb) - [Click here](https://github.com/saugat1794/Sample_Portfolio_Saugat_Gyawali/blob/main/SklearnAssign.ipynb)<br/>
 Link to the pdf - [Click here](https://github.com/saugat1794/Sample_Portfolio_Saugat_Gyawali/blob/main/SklearnAssign.pdf)
 
+## Portfolio: Image Classification
+Link to Jupyter notebook(pdf): [Click here](https://github.com/saugat1794/Sample_Portfolio_Saugat_Gyawali/blob/main/Image-Classification.pdf)<br/>
